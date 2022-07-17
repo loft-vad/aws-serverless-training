@@ -59,11 +59,19 @@ provider:
 #    - include-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  getProductsList:
+    handler: products.getProductsList
+    url:
+      cors: true
     events:
       - http:
-          path: product
+          path: products
+          method: get
+  getProductsById:
+    handler: products.getProductsById
+    events:
+      - http:
+          path: products/{id}
           method: get
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
