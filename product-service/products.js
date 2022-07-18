@@ -1,5 +1,7 @@
 'use strict';
 
+const axios = require('axios')
+
 const mockProducts = [
   {
     "count": 4,
@@ -59,6 +61,34 @@ const mockProducts = [
   }
 ];
 
+const image = () => {
+  return new Promise(async (resolve, reject) => {
+    let imageBase64 = '';
+
+    try {
+      imageBase64 = await axios.get('https://source.unsplash.com/random', { responseType: 'arraybuffer' })
+        .then((response) => Buffer.from(response.data, 'binary').toString('base64'));
+    } catch (error) {
+      console.error('Error fetching an image', error);
+      return reject(error);
+    }
+
+    const response = {
+      "statusCode": 200,
+      "isBase64Encoded": true,
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "*"
+      },
+      "body": imageBase64
+    };
+
+    return resolve(response);
+  })
+};
+
+module.exports.getRandomImage = image;
+
 module.exports.getProductsList = async (event) => {
 
   const response = {
@@ -79,7 +109,7 @@ module.exports.getProductsById = async (event) => {
 
   const result = responseBody.find((item) => {
     return item.id === id;
-  }) || "Product not found";
+  }) || { "error": "Not found" };
 
   const response = {
     "statusCode": 200,
