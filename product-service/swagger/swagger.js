@@ -2,7 +2,7 @@
             module.exports = {
   "swagger": "2.0",
   "info": {
-    "title": "product-service-temp",
+    "title": "product-service",
     "version": "1"
   },
   "paths": {
