@@ -1,17 +1,4 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
-service: product-service
+service: product-service-temp
 # app and org for use with dashboard.serverless.com
 org: vexter
 console: true
@@ -19,6 +6,10 @@ console: true
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 frameworkVersion: "3"
+
+plugins:
+  - serverless-webpack
+  - serverless-auto-swagger
 
 provider:
   name: aws
@@ -60,7 +51,7 @@ provider:
 
 functions:
   getProductsList:
-    handler: products.getProductsList
+    handler: handlers.getProductsList
     url:
       cors: true
     events:
@@ -68,10 +59,16 @@ functions:
           path: products
           method: get
   getProductsById:
-    handler: products.getProductsById
+    handler: handlers.getProductsById
     events:
       - http:
           path: products/{id}
+          method: get
+  getRandomImage:
+    handler: handlers.getRandomImage
+    events:
+      - http:
+          path: image
           method: get
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
