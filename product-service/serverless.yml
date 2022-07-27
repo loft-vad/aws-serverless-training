@@ -71,6 +71,12 @@ functions:
       - http:
           path: products/{id}
           method: get
+  postProduct:
+    handler: handlers.postProduct
+    events:
+      - http:
+          path: products
+          method: post
   getRandomImage:
     handler: handlers.getRandomImage
     events:
