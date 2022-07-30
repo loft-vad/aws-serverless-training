@@ -1,6 +1,6 @@
 import mockProducts from '../data/mock.json'
 
-export default function getProductsById() {
+export default function getProductsList() {
   return new Promise((resolve, reject) => {
     if (mockProducts) {
       resolve({
