@@ -1,8 +1,8 @@
 const AWS = require('aws-sdk');
-const { BUCKET } = process.env;
+const { BUCKET, REGION } = process.env;
 
 export default async function postImageUpload(event) {
-  const s3 = new AWS.S3({ region: 'eu-central-1' });
+  const s3 = new AWS.S3({ region: REGION });
 
   for (const record of event.Records) {
     await s3.copyObject({

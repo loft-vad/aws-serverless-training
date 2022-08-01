@@ -28,6 +28,15 @@ plugins:
   - serverless-dotenv-plugin
 
 functions:
+  importFileParser:
+    handler: handlers.importFileParser
+    events:
+      - s3:
+          bucket: ${env:BUCKET}
+          event: s3:ObjectCreated:* # * : all type allowed: put and post
+          rules:
+            - prefix: uploaded/
+          existing: true
   importProductsFile:
     handler: handlers.importProductsFile
     events:

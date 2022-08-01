@@ -1,6 +1,7 @@
 import thumbnailsList from './handlers/getThumbnailsList';
 import imageUpload from './handlers/postImageUpload';
 import processProductsFile from './handlers/importProductsFile';
+import fileParser from './handlers/importFileParser';
 
 const defaultHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -25,5 +26,11 @@ export const importProductsFile = async (event) => {
   const result = await processProductsFile(name);
   console.log('result: ', result);
   result.headers = defaultHeaders;
+  return result;
+};
+
+export const importFileParser = async (event) => {
+  const result = await fileParser(event);
+  console.log('result: ', result);
   return result;
 };
