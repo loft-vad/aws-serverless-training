@@ -1,0 +1,64 @@
+service: import-service
+org: vexter
+console: true
+
+frameworkVersion: "3"
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-central-1
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action: "s3:ListBucket"
+      Resource:
+        - "arn:aws:s3:::${env:BUCKET}"
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource:
+        - "arn:aws:s3:::${env:BUCKET}/*"
+
+plugins:
+  - serverless-webpack
+  - serverless-auto-swagger
+  - serverless-dotenv-plugin
+
+functions:
+  importFileParser:
+    handler: handlers.importFileParser
+    events:
+      - s3:
+          bucket: ${env:BUCKET}
+          event: s3:ObjectCreated:* # * : all type allowed: put and post
+          rules:
+            - prefix: uploaded/
+          existing: true
+  importProductsFile:
+    handler: handlers.importProductsFile
+    events:
+      - http:
+          path: import
+          method: get
+          request:
+            parameters:
+              querystrings:
+                name: true
+  getThumbnailsList:
+    handler: handlers.getThumbnailsList
+    events:
+      - http:
+          path: thumbnails
+          method: get
+  postImageUpload:
+    handler: handlers.postImageUpload
+    events:
+      - s3:
+          bucket: ${env:BUCKET}
+          event: s3:ObjectCreated:* # * : all type allowed: put and post
+          rules:
+            - prefix: images/
+          existing: true
