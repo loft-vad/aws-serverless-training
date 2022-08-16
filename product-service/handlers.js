@@ -4,6 +4,8 @@ import createProduct from './handlers/postProduct';
 import randomImage from './handlers/getRandomImage';
 import productsList2 from './handlers/getProductsList2';
 import productsById2 from './handlers/getProductsById2';
+const AWS = require('aws-sdk');
+const { REGION, SNS_ARN } = process.env;
 
 const defaultHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -54,4 +56,34 @@ export const getProductsById2 = async (event) => {
   productItem.headers = defaultHeaders;
   console.log('productItem: ', productItem);
   return productItem;
+};
+
+export const catalogBatchProcess = async (event) => {
+  const sns = new AWS.SNS({ region: REGION });
+  const sqsRecords = event.Records;
+
+  for (let i = 0; i < sqsRecords.length; i++) {
+    const { count, price, title, description } = JSON.parse(sqsRecords[i].body);
+    const result = await createProduct(count, price, title, description);
+
+    const snsParams = {
+      Subject: 'Product item is added',
+      Message: `Title: ${title}, Description: ${description}, Price: ${price}, Quantity: ${count}`,
+      TopicArn: SNS_ARN,
+      MessageAttributes: {
+        isDress: {
+          DataType: 'String',
+          StringValue: title.includes("dress").toString(),
+        },
+      },
+    };
+
+    sns.publish(snsParams, function (error, data) {
+      if (error) {
+        console.error("Adding to SNS - Error: ", error);
+      } else {
+        console.log("SNS added product items: " + JSON.stringify(data));
+      }
+    });
+  }
 };
