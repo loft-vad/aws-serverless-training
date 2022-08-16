@@ -21,6 +21,7 @@
     "node-fetch": "^3.2.8"
   },
   "devDependencies": {
+    "@serverless/compose": "^1.3.0",
     "serverless-plugin-swagger-ui": "^1.1.1"
   }
 }

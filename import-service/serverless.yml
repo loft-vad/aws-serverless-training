@@ -5,27 +5,38 @@ console: true
 frameworkVersion: "3"
 useDotenv: true
 
+plugins:
+  - serverless-webpack
+  - serverless-auto-swagger
+  - serverless-dotenv-plugin
+
 provider:
   name: aws
   runtime: nodejs12.x
   stage: dev
   region: eu-central-1
 
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action: "s3:ListBucket"
-      Resource:
-        - "arn:aws:s3:::${env:BUCKET}"
-    - Effect: "Allow"
-      Action:
-        - "s3:*"
-      Resource:
-        - "arn:aws:s3:::${env:BUCKET}/*"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: "s3:ListBucket"
+          Resource:
+            - "arn:aws:s3:::${env:BUCKET}"
+        - Effect: Allow
+          Action:
+            - "s3:*"
+          Resource:
+            - "arn:aws:s3:::${env:BUCKET}/*"
+        - Effect: Allow
+          Action:
+            - "sqs:*"
+          Resource:
+            - ${param:SQSQueueArn}
 
-plugins:
-  - serverless-webpack
-  - serverless-auto-swagger
-  - serverless-dotenv-plugin
+  environment:
+    SQS_URL: ${param:SQSUrl}
+    SQS_ARN: ${param:SQSQueueArn}
 
 functions:
   importFileParser:
