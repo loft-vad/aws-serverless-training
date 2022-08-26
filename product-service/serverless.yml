@@ -1,5 +1,5 @@
 service: product-service
-org: vexter
+# org: vexter
 console: true
 frameworkVersion: "3"
 
