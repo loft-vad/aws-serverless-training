@@ -1,0 +1,32 @@
+service: authorization-service
+# org: vexter
+console: true
+frameworkVersion: "3"
+
+plugins:
+  - serverless-dotenv-plugin
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-central-1
+
+functions:
+  basicAuthorizer:
+    handler: handlers.basicAuthorizer
+  # tokenAuth:
+  #   handler: handler
+  #     events:
+  #       - http:
+  #           path: toked
+  #           method: get
+  #           cors: true
+  #           authorizer:
+  #             name: tokenAuthorizer
+  #             arn: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:authorization-service-dev-token-authorizer"
+  #             resultTtlInSeconds: 0
+  #             identitySource: method.request.header.Authorization
+  #             type: token

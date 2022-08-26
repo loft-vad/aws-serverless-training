@@ -1,0 +1,88 @@
+service: import-service
+# org: vexter
+console: true
+
+frameworkVersion: "3"
+useDotenv: true
+
+plugins:
+  - serverless-webpack
+  - serverless-auto-swagger
+  - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-central-1
+  httpApi:
+    authorizers:
+      basicAuthorizer:
+        type: request
+        # functionName: basicAuthorizer
+        functionArn: "arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:authorization-service-${self:provider.stage}-basicAuthorizer"
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: "s3:ListBucket"
+          Resource:
+            - "arn:aws:s3:::${env:BUCKET}"
+        - Effect: Allow
+          Action:
+            - "s3:*"
+          Resource:
+            - "arn:aws:s3:::${env:BUCKET}/*"
+        - Effect: Allow
+          Action:
+            - "sqs:*"
+          Resource:
+            - ${param:SQSQueueArn}
+
+  environment:
+    SQS_URL: ${param:SQSUrl}
+    SQS_ARN: ${param:SQSQueueArn}
+
+functions:
+  importFileParser:
+    handler: handlers.importFileParser
+    events:
+      - s3:
+          bucket: ${env:BUCKET}
+          event: s3:ObjectCreated:* # * : all type allowed: put and post
+          rules:
+            - prefix: uploaded/
+          existing: true
+  importProductsFile:
+    handler: handlers.importProductsFile
+    events:
+      - http:
+          path: import
+          method: get
+          request:
+            parameters:
+              querystrings:
+                name: true	
+          authorizer:
+            name: basicAuthorizer
+                  # arn:aws:lambda:::function:custom-authorizer-demo-dev-restApiTokenAuthorizer
+            arn: "arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:authorization-service-${self:provider.stage}-basicAuthorizer"
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+            type: token
+  getThumbnailsList:
+    handler: handlers.getThumbnailsList
+    events:
+      - http:
+          path: thumbnails
+          method: get
+  postImageUpload:
+    handler: handlers.postImageUpload
+    events:
+      - s3:
+          bucket: ${env:BUCKET}
+          event: s3:ObjectCreated:* # * : all type allowed: put and post
+          rules:
+            - prefix: images/
+          existing: true
