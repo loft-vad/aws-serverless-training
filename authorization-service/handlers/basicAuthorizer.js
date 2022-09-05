@@ -4,8 +4,24 @@ const csv = require('csv-parser');
 export default async function basicAuthorizer(event, context, callbck) {
   console.log("Event: ", JSON.stringify(event));
 
-  if (event['type'] != "REQUEST")
-    callbck("Unauthorized");
+  if (event['type'] != "REQUEST") return "Unauthorized xx";
+
+
+  const generatePolicy = (principalId, resource, effect = "Allow") => {
+    return {
+      principalId: principalId,
+      policyDocument: {
+        Version: "2012-10-17",
+        Statement: [
+          {
+            Action: "execute-api:Invoke",
+            Effect: effect,
+            Resource: resource
+          }
+        ]
+      }
+    }
+  };
 
   try {
     // const encodedCreds = event.queryStringParameters.token;
@@ -25,25 +41,10 @@ export default async function basicAuthorizer(event, context, callbck) {
 
     const policy = generatePolicy(encodedCreds, event.methodArn, effect);
 
-    callbck(null, policy);
-  } catch (error) {
-    callbck(`Unauthorized: ${error.message}`);
-  }
 
-  const generatePolicy = (principalId, resource, effect = "Allow") => {
-    return {
-      principalId: principalId,
-      policyDocument: {
-        Version: "2012-10-17",
-        Statement: [
-          {
-            Action: "execute-api:Invoke",
-            Effect: effect,
-            Resource: resource
-          }
-        ]
-      }
-    }
-  };
+    return policy;
+  } catch (error) {
+    return `Unauthorized: ${error.message}`;
+  }
 
 }

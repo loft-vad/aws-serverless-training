@@ -65,7 +65,7 @@ functions:
               querystrings:
                 name: true	
           authorizer:
-            name: basicAuthorizer
+            # name: basicAuthorizer
                   # arn:aws:lambda:::function:custom-authorizer-demo-dev-restApiTokenAuthorizer
             arn: "arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:authorization-service-${self:provider.stage}-basicAuthorizer"
             resultTtlInSeconds: 0

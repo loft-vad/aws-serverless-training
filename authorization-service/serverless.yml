@@ -4,6 +4,7 @@ console: true
 frameworkVersion: "3"
 
 plugins:
+  - serverless-webpack
   - serverless-dotenv-plugin
 
 useDotenv: true

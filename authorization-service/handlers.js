@@ -1,4 +1,4 @@
-import basicAuthorizer from './handlers/basicAuthorizer';
+import basicAuthorizerFunction from './handlers/basicAuthorizer';
 
 const defaultHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,6 +7,7 @@ const defaultHeaders = {
 
 export const basicAuthorizer = async (event) => {
   console.log('event: ', event);
+  const result = basicAuthorizerFunction(event);
 
-  return event;
+  return result;
 };

@@ -1,0 +1,33 @@
+{
+  "name": "aws-serverless-training",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loft-vad/aws-serverless-training.git"
+  },
+  "author": "loft-vad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loft-vad/aws-serverless-training/issues"
+  },
+  "homepage": "https://github.com/loft-vad/aws-serverless-training#readme",
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.18.6",
+    "aws-sdk-mock": "^5.7.0",
+    "jest": "^28.1.3",
+    "serverless-dotenv-plugin": "^4.0.1",
+    "serverless-webpack": "^5.8.0",
+    "webpack": "^5.74.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1183.0",
+    "csv-parser": "^3.0.0",
+    "dotenv": "^16.0.1",
+    "pg": "^8.7.3"
+  }
+}
